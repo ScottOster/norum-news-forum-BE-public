@@ -3,32 +3,13 @@ const {
   articleData,
   commentData,
   userData,
-} = require( '../data/index.js' );
+} = require('../data/index.js');
 
-
-exports.seed = function ( knex ) {
-  return knex.migrate.rollback().then( () => {
-    
-  })
+exports.seed = function (knex) {
+  return knex.migrate.rollback().then(() => {
+    knex.migrate.latest();
+  });
   //
-
-
-
-
 
   // add seeding functionality here
 };
-
-
-/*
-exports.seed = function(knex) {
-  return knex.migrate
-    .rollback()
-    .then(() => knex.migrate.latest())
-    .then(() => {
-      return knex('houses')
-        .insert(houseData)
-        .returning('*');
-    })
-    .then((houseRows) => {
-      // <-- do the rest of the 

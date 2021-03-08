@@ -1,0 +1,9 @@
+You are now connected to database "nc_news" as user "dcrawley".
+ description | slug 
+-------------+------
+(0 rows)
+
+ user_id | username | avatar_url | name 
+---------+----------+------------+------
+(0 rows)
+

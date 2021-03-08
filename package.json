@@ -9,7 +9,8 @@
     "migrate-latest": "knex migrate:latest",
     "migrate-rollback": "knex migrate:rollback",
     "migrate-make": "knex migrate:make",
-    "test": "jest"
+    "test": "jest",
+    "test-query": "psql -f ./test_query.sql > output.txt"
   },
   "repository": {
     "type": "git",

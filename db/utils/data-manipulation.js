@@ -38,3 +38,13 @@ exports.renameKeys = (list, keyToChange, newKey) => {
 
   return newList;
 };
+
+exports.formatComments = (list, refObj, keyToChange, newKey) => {
+  const newList = list.map((listItem) => {
+    let newItem = { ...listItem };
+    newItem[newKey] = refObj[newItem[keyToChange]];
+    delete newItem[keyToChange];
+    return newItem;
+  });
+  return newList;
+};

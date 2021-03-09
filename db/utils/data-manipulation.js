@@ -1,29 +1,40 @@
 // extract any functions you are using to manipulate your data, into this file
 
-exports.reFormatTimeStamp = (unixNum)=> {
-  
-const dateObj = new Date(unixNum);
-const humanDate = dateObj.toLocaleString()
-return humanDate;
-
-}
-
+exports.reFormatTimeStamp = (unixNum) => {
+  const dateObj = new Date(unixNum);
+  const humanDate = dateObj.toLocaleString();
+  return humanDate;
+};
 
 exports.formatObj = (list, keyToChange, funct) => {
+  const newList = list.map((listItem) => {
+    let newItem = { ...listItem };
+    newItem[keyToChange] = funct(newItem[keyToChange]);
 
-    const newList = list.map((listItem) => {
-        let newItem = { ...listItem };
-        newItem[keyToChange] = funct(newItem[keyToChange]);
-        
-        return newItem;
-      });
-      return newList;
-    };
-      
-      
-      
-      
-      
-      
-      
+    return newItem;
+  });
+  return newList;
+};
 
+exports.createRef = (list, key, value) => {
+  let lookup = {};
+
+  if (Object.keys(list).length) {
+    list.forEach((item) => {
+      lookup[item[key]] = item[value];
+    });
+  }
+
+  return lookup;
+};
+
+exports.renameKeys = (list, keyToChange, newKey) => {
+  const newList = list.map((listItem) => {
+    let newItem = { ...listItem };
+    newItem[newKey] = newItem[keyToChange];
+    delete newItem[keyToChange];
+    return newItem;
+  });
+
+  return newList;
+};

@@ -4,6 +4,12 @@ const {
   commentData,
   userData,
 } = require('../data/index.js');
+const {
+  reFormatTimeStamp,
+  renameKeys,
+  formatObj,
+  createRef,
+} = require('../utils/data-manipulation');
 
 exports.seed = function (knex) {
   return knex.migrate
@@ -12,7 +18,46 @@ exports.seed = function (knex) {
     .then(() => {
       return knex('topics').insert(topicData).returning('*');
     })
-    .then((topicRows) => {
-      console.log(topicRows, '<----  ***');
+    .then(() => {
+      return knex('users').insert(userData).returning('*');
+    })
+    .then(() => {
+      const newArticleData = [...articleData].map((article) => {
+        const newArticle = { ...article };
+        newArticle.created_at = reFormatTimeStamp(newArticle.created_at);
+        return newArticle;
+      });
+
+      return knex('articles').insert(newArticleData).returning('*');
+    })
+    .then(() => {
+      const newCommentData = [...commentData].map((comment) => {
+        const newComment = { ...comment };
+        newComment.created_at = reFormatTimeStamp(newComment.created_at);
+        return newComment;
+      });
+      console.log(renameKeys(newCommentData, 'created_by', 'author'));
     });
 };
+
+/*  
+
+Given data:
+
+body: 'Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus.',
+    belongs_to: 'The People Tracking Every Touch, Pass And Tackle in the World Cup',
+    created_by: 'tickle122',
+    votes: -1,
+    created_at: 1468087638932,
+  
+    
+
+
+Transformed Data:
+comment_id: Made for us
+author: Format object func (new key = author, old key = created_by ----> delete old key)
+article_id: create ref object then format object
+votes:
+created_at:  call reFormatTimeStampfunction on the number
+body:
+*/

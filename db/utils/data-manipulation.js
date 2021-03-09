@@ -9,7 +9,7 @@ return humanDate;
 }
 
 
-exports.formatObj(list, keyToChange, funct) {
+exports.formatObj = (list, keyToChange, funct) => {
 
     const newList = list.map((listItem) => {
         let newItem = { ...listItem };

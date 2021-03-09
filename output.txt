@@ -1,7 +1,10 @@
-You are now connected to database "nc_news" as user "scott".
- description | slug 
--------------+------
-(0 rows)
+You are now connected to database "nc_news" as user "dcrawley".
+               description               |   slug   
+-----------------------------------------+----------
+ Code is love, code is life              | coding
+ FOOTIE!                                 | football
+ Hey good looking, what you got cooking? | cooking
+(3 rows)
 
  username | avatar_url | name 
 ----------+------------+------

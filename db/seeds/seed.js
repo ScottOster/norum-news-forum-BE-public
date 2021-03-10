@@ -9,7 +9,7 @@ const {
   renameKeys,
   formatObj,
   createRef,
-  formatComments
+  formatComments,
 } = require('../utils/data-manipulation');
 
 exports.seed = function (knex) {
@@ -32,25 +32,26 @@ exports.seed = function (knex) {
       return knex('articles').insert(newArticleData).returning('*');
     })
     .then((articleRows) => {
-
-      const commentsRefObj = createRef(articleRows, 'title', 'article_id')
- //console.log(commentsRefObj);
+      const commentsRefObj = createRef(articleRows, 'title', 'article_id');
 
       let newCommentData = [...commentData].map((comment) => {
         const newComment = { ...comment };
         newComment.created_at = reFormatTimeStamp(newComment.created_at);
         return newComment;
       });
-      newCommentData = renameKeys(newCommentData, 'created_by', 'author')
-      //console.log(newCommentData)
-      const dbReadyComments = formatComments(newCommentData, commentsRefObj, 'belongs_to', 'article_id')
-      //console.log(dbReadyComments);
+      newCommentData = renameKeys(newCommentData, 'created_by', 'author');
 
-     return knex('comments').insert(dbReadyComments).returning('*')
-      .then(comments =>{
+      const dbReadyComments = formatComments(
+        newCommentData,
+        commentsRefObj,
+        'belongs_to',
+        'article_id'
+      );
 
-        console.log(comments)
-      })
+      return knex('comments')
+        .insert(dbReadyComments)
+        .returning('*')
+        .then((comments) => {});
     });
 };
 

@@ -2,7 +2,7 @@ const {
   reFormatTimeStamp,
   createRef,
   renameKeys,
-  formatComments
+  formatComments,
 } = require('../db/utils/data-manipulation.js');
 
 describe('reFormatTimeStamp', () => {
@@ -169,6 +169,7 @@ describe('renameKeys', () => {
         author: 'change my key',
       },
     ];
+
     expect(renameKeys(books, keyToChange, newKey)).toEqual(expected);
   });
   it('should not mutate the given list object', () => {
@@ -195,7 +196,7 @@ describe('formatComments', () => {
   it('returns a new empty array, when passed an empty array', () => {
     const albums = [];
     const artistLookup = {};
-    const actual =formatComments(albums, artistLookup);
+    const actual = formatComments(albums, artistLookup);
     const expected = [];
     expect(actual).toEqual(expected);
     expect(actual).not.toBe(albums);
@@ -209,7 +210,7 @@ describe('formatComments', () => {
       Doves: 324,
     };
     expect(
-    formatComments(albums, artistIdReference, 'artist', 'artist_id')
+      formatComments(albums, artistIdReference, 'artist', 'artist_id')
     ).toEqual([{ name: 'Grammatics', artist_id: 9923, releaseYear: 2009 }]);
   });
   it('should return an array of multiple object with the correct key changed for each one', () => {
@@ -222,7 +223,7 @@ describe('formatComments', () => {
       Doves: 324,
     };
     expect(
-     formatComments(albums, artistIdReference, 'artist', 'artist_id')
+      formatComments(albums, artistIdReference, 'artist', 'artist_id')
     ).toEqual([
       { name: 'Grammatics', artist_id: 9923, releaseYear: 2009 },
       { name: 'Kingdom of Rust', artist_id: 324, releaseYear: 2009 },
@@ -237,7 +238,7 @@ describe('formatComments', () => {
       Grammatics: 9923,
       Doves: 324,
     };
-   formatComments(albums, artistIdReference, 'artist', 'artist_id');
+    formatComments(albums, artistIdReference, 'artist', 'artist_id');
     expect(albums).toEqual([
       { name: 'Grammatics', artist: 'Grammatics', releaseYear: 2009 },
       { name: 'Kingdom of Rust', artist: 'Doves', releaseYear: 2009 },

@@ -10,6 +10,7 @@
     "migrate-rollback": "knex migrate:rollback",
     "migrate-make": "knex migrate:make",
     "test": "jest",
+    "test app": "jest ./app.js",
     "test-query": "psql -f ./test_query.sql > output.txt"
   },
   "repository": {

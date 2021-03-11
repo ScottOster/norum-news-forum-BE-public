@@ -1,3 +1,4 @@
+const { default: knex } = require("knex");
 const dbConnection = require("../db/connection");
 
 exports.fetchArticleById = (articleObj) => {
@@ -19,11 +20,14 @@ exports.fetchArticleById = (articleObj) => {
     .where("articles.article_id", "=", articleObj.article_id)
     .groupBy("articles.article_id")
     .then((dbRes) => {
-      //console.log("DB RES>>>>", { article: dbRes });
       return { article: dbRes };
     });
-  //.catch((err) => {
-  //console.log(err.code, "ERROR RETURNED FROM DB TO MODEL");
-  // });
-  /// insert return db connect here with query
+};
+
+exports.patchArticleById = (incVotesObj, articleIdObj) => {
+  return dbConnection
+    .increment("votes", incVotesObj.inc_votes)
+    .from("articles")
+    .where(articleIdObj)
+    .returning("*");
 };

@@ -1,12 +1,16 @@
 const express = require("express");
 const apiRouter = require("./routes/apiRouter.js");
-const {psqlThrownErrorHandler, customErrorHandler} = require('./errorHandlers')
+const {
+  psqlThrownErrorHandler,
+  customErrorHandler,
+} = require("./errorHandlers");
+
 const app = express();
+app.use(express.json());
 
 app.use("/api", apiRouter);
 
-//comes back here when path fails
-app.use(psqlThrownErrorHandler)
+app.use(psqlThrownErrorHandler);
 app.use(customErrorHandler);
-//app.use(errorhandler2?)
+
 module.exports = app;

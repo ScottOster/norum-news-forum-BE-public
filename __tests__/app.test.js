@@ -54,7 +54,7 @@ describe("/api", () => {
 });
 
 describe("/articles", () => {
-  describe("GET", () => {
+  describe("GET article by id", () => {
     it("returns a 200 and correct object when succesfull", () => {
       return request(app)
         .get("/api/articles/5")
@@ -78,6 +78,53 @@ describe("/articles", () => {
         .then((response) => {
           expect(response.body.msg).toEqual("Bad Request");
         });
+    });
+  });
+
+  describe("PATCH article by id", () => {
+    it("returns an updated article with new vote value, with all the correct keys", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: 100 })
+        .expect(200)
+        .then((response) => {
+          console.log(response.body.article);
+          expect(response.body.article[0].votes).toEqual(200);
+          expect(response.body.article[0]).toHaveProperty("article_id");
+          expect(response.body.article[0]).toHaveProperty("title");
+          expect(response.body.article[0]).toHaveProperty("body");
+          expect(response.body.article[0]).toHaveProperty("votes");
+          expect(response.body.article[0]).toHaveProperty("topic");
+          expect(response.body.article[0]).toHaveProperty("author");
+          expect(response.body.article[0]).toHaveProperty("created_at");
+        });
+    });
+
+    it("responds with 400 bad request when article id value is invalid (not a num)", () => {
+      return request(app)
+        .patch("/api/articles/gdhgshdgdh")
+        .send({ inc_votes: 100 })
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toBe("Bad Request");
+        });
+    });
+  });
+
+  describe.only("api/articles/:article_id/comments", () => {
+    describe("POST article by username", () => {
+      it("recieves a 201 and copy of comment when post is successful", () => {
+        return request(app)
+          .post("/api/articles/1/comments")
+          .send({
+            username: "Jimbob89",
+            Body: "if this comment makes it in ill eat my hat",
+          })
+          .expect(201)
+          .then((response) => {
+            console.log(response.body);
+          });
+      });
     });
   });
 });

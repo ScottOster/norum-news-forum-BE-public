@@ -37,8 +37,6 @@ describe("/api", () => {
           .get("/api/users/butter_bridge")
           .expect(200)
           .then(({ body }) => {
-            //console.log(body, "<<<<<<");
-
             expect(body.user[0].name).toEqual("jonny");
           });
       });
@@ -47,38 +45,39 @@ describe("/api", () => {
         return request(app)
           .get("/api/users/nonexistentusername")
           .expect(404)
-          .then((contRes) => {
-            expect(contRes.body.msg).toEqual("user not found");
-            //console.log(contRes.body.msg, "<<<<<");
+          .then((res) => {
+            expect(res.body.msg).toBe("user not found");
           });
       });
     });
   });
 });
 
-describe.only("/articles", () => {
+describe("/articles", () => {
   describe("GET", () => {
     it("returns a 200 and correct object when succesfull", () => {
       return request(app)
         .get("/api/articles/5")
         .expect(200)
         .then(({ body }) => {
-          console.log(body, "<<<<<<");
+          expect(body.article[0]).toHaveProperty("author");
+          expect(body.article[0]).toHaveProperty("title");
+          expect(body.article[0]).toHaveProperty("article_id");
+          expect(body.article[0]).toHaveProperty("body");
+          expect(body.article[0]).toHaveProperty("topic");
+          expect(body.article[0]).toHaveProperty("created_at");
+          expect(body.article[0]).toHaveProperty("votes");
+          expect(body.article[0]).toHaveProperty("comment_count");
+        });
+    });
+
+    it("returns a 400 when user inputs incorrect req type(string not article int)", () => {
+      return request(app)
+        .get("/api/articles/jhcjhsh")
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toEqual("Bad Request");
         });
     });
   });
 });
-
-/*GET /api/articles/:article_id
-an article object, which should have the following properties:
-
-author which is the username from the users table
-title
-article_id
-body
-topic
-created_at
-votes
-comment_count which is the total count of all the comments with this article_id - you should make use of knex queries in order to achieve this
-
- */

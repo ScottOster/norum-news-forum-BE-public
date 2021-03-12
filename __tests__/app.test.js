@@ -111,20 +111,61 @@ describe("/articles", () => {
     });
   });
 
-  describe.only("api/articles/:article_id/comments", () => {
+  describe("api/articles/:article_id/comments", () => {
     describe("POST article by username", () => {
-      it("recieves a 201 and copy of comment when post is successful", () => {
+      it("recieves a 201 and copy of comment with correct properties when post is successful", () => {
         return request(app)
           .post("/api/articles/1/comments")
           .send({
-            username: "Jimbob89",
-            Body: "if this comment makes it in ill eat my hat",
+            username: "icellusedkars",
+            body: "if this comment makes it in ill eat my hat",
           })
           .expect(201)
+          .then(({ body }) => {
+            console.log(body);
+            expect(body.postedComment[0]).toHaveProperty("comment_id");
+            expect(body.postedComment[0]).toHaveProperty("author");
+            expect(body.postedComment[0]).toHaveProperty("article_id");
+            expect(body.postedComment[0]).toHaveProperty("votes");
+            expect(body.postedComment[0]).toHaveProperty("created_at");
+            expect(body.postedComment[0]).toHaveProperty("body");
+          });
+      });
+      it("returns a 400 bad request when article id is invalid (not an integer)", () => {
+        return request(app)
+          .post("/api/articles/invalidentry/comments")
+          .send({
+            username: "icellusedkars",
+            body: "if this comment makes it in ill eat my hat",
+          })
+          .expect(400)
           .then((response) => {
             console.log(response.body);
+            expect(response.body.msg).toBe("Bad Request");
+          });
+      });
+
+      it.only("returns a 400 bad request when body not a string", () => {
+        return request(app)
+          .post("/api/articles/1/comments")
+          .send({
+            username: "icellusedkars",
+            body: 66454654654,
+          })
+          .expect(400)
+          .then((response) => {
+            console.log(response.body);
+            expect(response.body.msg).toBe("Bad Request");
           });
       });
     });
   });
 });
+
+//POSSIBLE ERRORS
+
+//22p02 400 bad request when article id is invalid (not num)
+
+//22p02 400 bad request when body is not a string value
+
+//404 not found when author/username is  a string but that user deosnt exist

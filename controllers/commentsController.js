@@ -1,3 +1,9 @@
-exports.postCommentByUsername = (req, res, next) => {
-  console.log(req.body, req.params, "in the comments controller ");
+const { createCommentByArticleId } = require("../models/commentsModels.js");
+
+exports.postCommentByArticleId = (req, res, next) => {
+  createCommentByArticleId(req.body, req.params)
+    .then((comment) => {
+      res.status(201).send({ postedComment: comment });
+    })
+    .catch(next);
 };

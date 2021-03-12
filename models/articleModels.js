@@ -1,4 +1,3 @@
-const { default: knex } = require("knex");
 const dbConnection = require("../db/connection");
 
 exports.fetchArticleById = (articleObj) => {

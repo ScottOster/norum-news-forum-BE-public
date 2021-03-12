@@ -145,7 +145,7 @@ describe("/articles", () => {
           });
       });
 
-      it.only("returns a 400 bad request when body not a string", () => {
+      it("returns a 400 bad request when body not a string", () => {
         return request(app)
           .post("/api/articles/1/comments")
           .send({
@@ -159,13 +159,55 @@ describe("/articles", () => {
           });
       });
     });
+
+    it("returns a 404 not found when author is a string but doesnt exist", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({
+          username: "iceljdhfdjhdfjfh",
+          body: "doesnt matter what i write here, it wont make it in",
+        })
+        .expect(404)
+        .then((response) => {
+          console.log(response.body);
+          expect(response.body.msg).toBe("not found");
+        });
+    });
   });
 });
 
-//POSSIBLE ERRORS
+describe.only("GET comments by article id", () => {
+  describe("GET /api/articles/:article_id/comments", () => {
+    it("should respond with status 200 and array of of all comments for given id ", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .send({ sort_by: "comment_id", order: "asc" })
+        .expect(200)
+        .then(({ body }) => {
+          console.log({ body });
+        });
+    });
+  });
+});
 
-//22p02 400 bad request when article id is invalid (not num)
+/* 
+GET /api/articles/:article_id/comments\
 
-//22p02 400 bad request when body is not a string value
+QUERIES ACCEPTED 
+sort_by, which sorts the comments by any valid column (defaults to created_at)
+order, which can be set to asc or desc for ascending or descending (defaults to descending)
 
-//404 not found when author/username is  a string but that user deosnt exist
+
+should return array of ALL comments for given article id with properties
+
+comment_id
+votes
+created_at
+author which is the username from the users table
+body
+
+
+possible tests - sort order 
+
+
+*/

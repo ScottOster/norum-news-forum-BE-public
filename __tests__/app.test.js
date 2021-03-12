@@ -178,15 +178,45 @@ describe("/articles", () => {
 
 describe.only("GET comments by article id", () => {
   describe("GET /api/articles/:article_id/comments", () => {
-    it("should respond with status 200 and array of of all comments for given id ", () => {
+    it("should respond with status 200 and array of of all comments for given id, sorted in correct order  ", () => {
       return request(app)
         .get("/api/articles/1/comments")
         .send({ sort_by: "comment_id", order: "asc" })
         .expect(200)
         .then(({ body }) => {
-          console.log({ body });
+          expect(body[0]).toMatchObject({
+            comment_id: 2,
+            author: "butter_bridge",
+            article_id: 1,
+            votes: 14,
+            created_at: "2016-11-22T12:36:03.000Z",
+            body:
+              "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          });
+
+          expect(body[0].comment_id < body[1].comment_id).toBe(true);
+          //console.log(body[0]);
         });
     });
+  });
+
+  it("should respond with array of of all comments , sorted in DEFAULT order when no query passed ", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .send({ sort_by: "comment_id", order: "asc" })
+      .expect(200)
+      .then(({ body }) => {
+        expect(body[0]).toMatchObject({
+          comment_id: 2,
+          author: "butter_bridge",
+          article_id: 1,
+          votes: 14,
+          created_at: "2016-11-22T12:36:03.000Z",
+          body:
+            "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+        });
+        //console.log(body[0]);
+      });
   });
 });
 

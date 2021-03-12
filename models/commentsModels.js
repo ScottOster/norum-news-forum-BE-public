@@ -25,7 +25,18 @@ exports.createCommentByArticleId = (userCommentObj, articleIdObj) => {
   }
 };
 
-exports.fetchCommentsByArticleId = ({ sort_by }, articleObj) => {
-  console.log(sort_by);
-  return dbConnection.select("*").from("comments").where(articleObj).orderBy();
+exports.fetchCommentsByArticleId = (querysObj, articleObj) => {
+  console.log(querysObj, "in model");
+  const order = querysObj.order;
+  const sort_by = querysObj.sort_by;
+
+  return dbConnection
+    .select("*")
+    .from("comments")
+    .where(articleObj)
+    .orderBy(sort_by || "created_at", order || "desc")
+    .then((commenstArray) => {
+      //console.log(commenstArray);
+      return commenstArray;
+    });
 };

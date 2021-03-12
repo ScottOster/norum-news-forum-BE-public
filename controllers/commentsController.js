@@ -16,7 +16,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
 
   fetchCommentsByArticleId(req.body, req.params)
     .then((commentsArray) => {
-      console, log(commentsArray);
+      res.status(200).send(commentsArray);
     })
     .catch(next);
 };

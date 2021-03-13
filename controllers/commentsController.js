@@ -2,6 +2,7 @@ const {
   createCommentByArticleId,
   fetchCommentsByArticleId,
   updateCommentVotesById,
+  eraseCommentById,
 } = require("../models/commentsModels.js");
 
 exports.postCommentByArticleId = (req, res, next) => {
@@ -24,6 +25,14 @@ exports.patchCommentById = (req, res, next) => {
   updateCommentVotesById(req.body, req.params)
     .then((comment) => {
       res.status(200).send(comment);
+    })
+    .catch(next);
+};
+
+exports.deleteCommentById = (req, res, next) => {
+  eraseCommentById(req.params)
+    .then((deletedComment) => {
+      res.status(204).send(deletedComment);
     })
     .catch(next);
 };

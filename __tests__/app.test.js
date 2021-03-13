@@ -307,7 +307,7 @@ describe("GET articles", () => {
   });
 });
 
-describe.only("PATCH votes by comment id", () => {
+describe("PATCH votes by comment id", () => {
   describe("/api/comments/:comment_id", () => {
     it("responds with updated comment with new vote value when positive value passed", () => {
       return request(app)
@@ -336,3 +336,31 @@ describe.only("PATCH votes by comment id", () => {
     });
   });
 });
+
+describe.only("Delete comment by ID", () => {
+  describe("/api/comments/:comment_id", () => {
+    it("should delete given comment and return status 204", () => {
+      return request(app).delete("/api/comments/14").expect(204);
+    });
+    it("should delete given comment and return status 204", () => {
+      return request(app).delete("/api/comments/7").expect(204);
+    });
+    it("should delete given comment and return status 204", () => {
+      return request(app)
+        .delete("/api/comments/2")
+        .expect(204)
+        .then((res) => {});
+    });
+  });
+});
+
+/* 
+
+DELETE /api/comments/:comment_id
+Should
+delete the given comment by comment_id
+Responds with
+status 204 and no content
+
+
+*/

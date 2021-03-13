@@ -57,3 +57,13 @@ exports.updateCommentVotesById = (votesObj, commentIdObj) => {
       .returning("*");
   }
 };
+
+exports.eraseCommentById = (commentId) => {
+  return dbConnection
+
+    .select("*")
+    .from("comments")
+    .where("comment_id", commentId.comment_id)
+    .del()
+    .returning("*");
+};

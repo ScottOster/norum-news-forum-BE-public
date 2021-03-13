@@ -26,7 +26,7 @@ exports.createCommentByArticleId = (userCommentObj, articleIdObj) => {
 };
 
 exports.fetchCommentsByArticleId = (querysObj, articleObj) => {
-  console.log(querysObj, "in model");
+  console.log(articleObj, "in model");
   const order = querysObj.order;
   const sort_by = querysObj.sort_by;
 
@@ -36,7 +36,12 @@ exports.fetchCommentsByArticleId = (querysObj, articleObj) => {
     .where(articleObj)
     .orderBy(sort_by || "created_at", order || "desc")
     .then((commenstArray) => {
-      //console.log(commenstArray);
+      if (!commenstArray.length) {
+        return Promise.reject({
+          status: 404,
+          msg: "article does not exist",
+        });
+      }
       return commenstArray;
     });
 };

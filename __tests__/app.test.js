@@ -176,7 +176,7 @@ describe("/articles", () => {
   });
 });
 
-describe.only("GET comments by article id", () => {
+describe("GET comments by article id", () => {
   describe("GET /api/articles/:article_id/comments", () => {
     it("should respond with status 200 and array of of all comments for given id, sorted in correct order  ", () => {
       return request(app)
@@ -198,37 +198,112 @@ describe.only("GET comments by article id", () => {
           //console.log(body[0]);
         });
     });
-  });
 
-  it("should respond with array of of all comments for given id, sorted in correct order", () => {
-    return request(app)
-      .get("/api/articles/1/comments")
-      .send({ sort_by: "votes", order: "asc" })
-      .expect(200)
-      .then(({ body }) => {
-        expect(body[0].votes < body[body.length - 1].votes).toBe(true);
-      });
+    it("should respond with array of of all comments for given id, sorted in correct order", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .send({ sort_by: "votes", order: "asc" })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body[0].votes < body[body.length - 1].votes).toBe(true);
+        });
+    });
+
+    it("should respond with 400 bad req when incorrect format article id passed", () => {
+      return request(app)
+        .get("/api/articles/hxbhx/comments")
+        .send({ sort_by: "votes", order: "asc" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toEqual("Bad Request");
+        });
+    });
+
+    it("should respond with 404 bad req when article id passed but does not exist", () => {
+      return request(app)
+        .get("/api/articles/9999/comments")
+        .send({ sort_by: "votes", order: "asc" })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toEqual("article does not exist");
+        });
+    });
   });
 });
 
-/* 
-GET /api/articles/:article_id/comments\
+describe("GET articles", () => {
+  describe("/api/articles", () => {
+    it("returns an array of Articles with correct props when no queries applied ", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
 
-QUERIES ACCEPTED 
-sort_by, which sorts the comments by any valid column (defaults to created_at)
-order, which can be set to asc or desc for ascending or descending (defaults to descending)
+          expect(Array.isArray(body.articles)).toBe(true);
+          expect(body.articles[0]).toHaveProperty("author");
+          expect(body.articles[0]).toHaveProperty("title");
+          expect(body.articles[0]).toHaveProperty("article_id");
+          expect(body.articles[0]).toHaveProperty("topic");
+          expect(body.articles[0]).toHaveProperty("created_at");
+          expect(body.articles[0]).toHaveProperty("votes");
+          expect(body.articles[0]).toHaveProperty("comment_count");
+        });
+    });
 
+    it("returns correctly filtered array of articles when queries applied", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({
+          sort_by: " article_id",
+          order: "asc",
+          author: "rogersop",
+          topic: "cats",
+        })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toEqual(1);
+          expect(body.articles[0].author).toBe("rogersop");
+          expect(body.articles[0].topic).toBe("cats");
+        });
+    });
 
-should return array of ALL comments for given article id with properties
+    it("returns correctly filtered sorted and ordered array of articles when all queries applied", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({
+          sort_by: " article_id",
+          order: "asc",
+          author: "icellusedkars",
+          topic: "mitch",
+        })
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
 
-comment_id
-votes
-created_at
-author which is the username from the users table
-body
-
-
-possible tests - sort order 
-
-
-*/
+          expect(body.articles.length).toEqual(6);
+          expect(body.articles[0].author).toBe("icellusedkars");
+          expect(body.articles[0].topic).toBe("mitch");
+          expect(
+            body.articles[0].article_id <
+              body.articles[body.articles.length - 1].article_id
+          ).toBe(true);
+        });
+    });
+    it.only("returns 400 bad request when trying to sort by a column that doesnt exist ", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({
+          sort_by: "blood_type",
+          order: "asc",
+          author: "icellusedkars",
+          topic: "mitch",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          console.log(body);
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
+  });
+});

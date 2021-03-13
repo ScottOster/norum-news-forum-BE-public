@@ -45,3 +45,15 @@ exports.fetchCommentsByArticleId = (querysObj, articleObj) => {
       return commenstArray;
     });
 };
+
+exports.updateCommentVotesById = (votesObj, commentIdObj) => {
+  if (votesObj.inc_votes === undefined) {
+    return Promise.reject({ status: 400, msg: "must enter valid vote amount" });
+  } else {
+    return dbConnection
+      .increment("votes", votesObj.inc_votes)
+      .from("comments")
+      .where(commentIdObj)
+      .returning("*");
+  }
+};

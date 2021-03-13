@@ -1,6 +1,7 @@
 const {
   createCommentByArticleId,
   fetchCommentsByArticleId,
+  updateCommentVotesById,
 } = require("../models/commentsModels.js");
 
 exports.postCommentByArticleId = (req, res, next) => {
@@ -12,11 +13,17 @@ exports.postCommentByArticleId = (req, res, next) => {
 };
 
 exports.getCommentsByArticleId = (req, res, next) => {
-  //console.log("hi from the controller ", req.body, req.params);
-
   fetchCommentsByArticleId(req.body, req.params)
     .then((commentsArray) => {
       res.status(200).send(commentsArray);
+    })
+    .catch(next);
+};
+
+exports.patchCommentById = (req, res, next) => {
+  updateCommentVotesById(req.body, req.params)
+    .then((comment) => {
+      res.status(200).send(comment);
     })
     .catch(next);
 };

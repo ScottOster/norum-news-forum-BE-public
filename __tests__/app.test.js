@@ -195,7 +195,6 @@ describe("GET comments by article id", () => {
           });
 
           expect(body[0].comment_id < body[1].comment_id).toBe(true);
-          //console.log(body[0]);
         });
     });
 
@@ -290,7 +289,7 @@ describe("GET articles", () => {
           ).toBe(true);
         });
     });
-    it.only("returns 400 bad request when trying to sort by a column that doesnt exist ", () => {
+    it("returns 400 bad request when trying to sort by a column that doesnt exist ", () => {
       return request(app)
         .get("/api/articles")
         .send({
@@ -303,6 +302,36 @@ describe("GET articles", () => {
         .then(({ body }) => {
           console.log(body);
           expect(body.msg).toBe("Bad Request");
+        });
+    });
+  });
+});
+
+describe.only("PATCH votes by comment id", () => {
+  describe("/api/comments/:comment_id", () => {
+    it("responds with updated comment with new vote value when positive value passed", () => {
+      return request(app)
+        .patch("/api/comments/18")
+        .send({ inc_votes: 10 })
+        .then(({ body }) => {
+          expect(body[0].votes).toBe(26);
+        });
+    });
+
+    it("responds with updated comment with new vote value when negative value passed", () => {
+      return request(app)
+        .patch("/api/comments/18")
+        .send({ inc_votes: -10 })
+        .then(({ body }) => {
+          expect(body[0].votes).toBe(6);
+        });
+    });
+    it("returns a 400 and does not change vote, when no new vote value is passed", () => {
+      return request(app)
+        .patch("/api/comments/18")
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toBe("must enter valid vote amount");
         });
     });
   });

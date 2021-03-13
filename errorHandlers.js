@@ -14,7 +14,6 @@ exports.customErrorHandler = (err, req, res, next) => {
   if (err.status === 404) {
     res.status(404).send(err);
   } else if ((err.status = 400)) {
-    console.log(err);
     res.status(400).send(err);
   }
 };

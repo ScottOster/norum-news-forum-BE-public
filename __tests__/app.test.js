@@ -60,7 +60,6 @@ describe("/articles", () => {
         .get("/api/articles/5")
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           expect(body.article).toHaveProperty("author");
           expect(body.article).toHaveProperty("title");
           expect(body.article).toHaveProperty("article_id");
@@ -131,7 +130,6 @@ describe("/articles", () => {
           })
           .expect(201)
           .then(({ body }) => {
-            console.log(body);
             expect(body.postedComment[0]).toHaveProperty("comment_id");
             expect(body.postedComment[0]).toHaveProperty("author");
             expect(body.postedComment[0]).toHaveProperty("article_id");
@@ -149,7 +147,6 @@ describe("/articles", () => {
           })
           .expect(400)
           .then((response) => {
-            console.log(response.body);
             expect(response.body.msg).toBe("Bad Request");
           });
       });
@@ -163,7 +160,6 @@ describe("/articles", () => {
           })
           .expect(400)
           .then((response) => {
-            console.log(response.body);
             expect(response.body.msg).toBe("Bad Request");
           });
       });
@@ -178,7 +174,6 @@ describe("/articles", () => {
         })
         .expect(404)
         .then((response) => {
-          console.log(response.body);
           expect(response.body.msg).toBe("not found");
         });
     });

@@ -7,7 +7,6 @@ exports.createCommentByArticleId = (userCommentObj, articleIdObj) => {
       msg: "Bad Request",
     });
   } else {
-    console.log("Hi");
     return dbConnection
 
       .select("comments")
@@ -26,7 +25,6 @@ exports.createCommentByArticleId = (userCommentObj, articleIdObj) => {
 };
 
 exports.fetchCommentsByArticleId = (querysObj, articleObj) => {
-  console.log(articleObj, "in model");
   const order = querysObj.order;
   const sort_by = querysObj.sort_by;
 

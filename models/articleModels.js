@@ -1,3 +1,4 @@
+const e = require("express");
 const dbConnection = require("../db/connection");
 
 exports.fetchArticleById = (articleObj) => {
@@ -18,7 +19,7 @@ exports.fetchArticleById = (articleObj) => {
     .leftJoin("comments", "articles.article_id", "=", "comments.article_id")
     .where("articles.article_id", "=", articleObj.article_id)
     .groupBy("articles.article_id")
-    .then((dbRes) => {
+    .then(([dbRes]) => {
       return { article: dbRes };
     });
 };

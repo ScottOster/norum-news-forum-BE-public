@@ -54,20 +54,21 @@ describe("/api", () => {
 });
 
 describe("/articles", () => {
-  describe("GET article by id", () => {
+  describe.only("GET article by id", () => {
     it("returns a 200 and correct object when succesfull", () => {
       return request(app)
         .get("/api/articles/5")
         .expect(200)
         .then(({ body }) => {
-          expect(body.article[0]).toHaveProperty("author");
-          expect(body.article[0]).toHaveProperty("title");
-          expect(body.article[0]).toHaveProperty("article_id");
-          expect(body.article[0]).toHaveProperty("body");
-          expect(body.article[0]).toHaveProperty("topic");
-          expect(body.article[0]).toHaveProperty("created_at");
-          expect(body.article[0]).toHaveProperty("votes");
-          expect(body.article[0]).toHaveProperty("comment_count");
+          console.log(body);
+          expect(body.article).toHaveProperty("author");
+          expect(body.article).toHaveProperty("title");
+          expect(body.article).toHaveProperty("article_id");
+          expect(body.article).toHaveProperty("body");
+          expect(body.article).toHaveProperty("topic");
+          expect(body.article).toHaveProperty("created_at");
+          expect(body.article).toHaveProperty("votes");
+          expect(body.article).toHaveProperty("comment_count");
         });
     });
 
@@ -337,7 +338,7 @@ describe("PATCH votes by comment id", () => {
   });
 });
 
-describe.only("Delete comment by ID", () => {
+describe("Delete comment by ID", () => {
   describe("/api/comments/:comment_id", () => {
     it("should delete given comment and return status 204", () => {
       return request(app).delete("/api/comments/14").expect(204);

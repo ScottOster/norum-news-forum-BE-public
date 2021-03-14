@@ -82,7 +82,7 @@ describe("/articles", () => {
     });
   });
 
-  describe.only("PATCH article by id", () => {
+  describe("PATCH article by id", () => {
     it("returns an updated article with new vote value, with all the correct keys", () => {
       return request(app)
         .patch("/api/articles/1")
@@ -246,8 +246,6 @@ describe("GET articles", () => {
         .get("/api/articles")
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
-
           expect(Array.isArray(body.articles)).toBe(true);
           expect(body.articles[0]).toHaveProperty("author");
           expect(body.articles[0]).toHaveProperty("title");
@@ -287,8 +285,6 @@ describe("GET articles", () => {
         })
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
-
           expect(body.articles.length).toEqual(6);
           expect(body.articles[0].author).toBe("icellusedkars");
           expect(body.articles[0].topic).toBe("mitch");
@@ -309,7 +305,6 @@ describe("GET articles", () => {
         })
         .expect(400)
         .then(({ body }) => {
-          console.log(body);
           expect(body.msg).toBe("Bad Request");
         });
     });
@@ -323,7 +318,7 @@ describe("PATCH votes by comment id", () => {
         .patch("/api/comments/18")
         .send({ inc_votes: 10 })
         .then(({ body }) => {
-          expect(body[0].votes).toBe(26);
+          expect(body.comment.votes).toBe(26);
         });
     });
 
@@ -332,15 +327,15 @@ describe("PATCH votes by comment id", () => {
         .patch("/api/comments/18")
         .send({ inc_votes: -10 })
         .then(({ body }) => {
-          expect(body[0].votes).toBe(6);
+          expect(body.comment.votes).toBe(6);
         });
     });
-    it("returns a 400 and does not change vote, when no new vote value is passed", () => {
+    it("returns a 200 and does not change vote, when no new vote value is passed", () => {
       return request(app)
         .patch("/api/comments/18")
-        .expect(400)
-        .then((response) => {
-          expect(response.body.msg).toBe("must enter valid vote amount");
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comment.votes).toBe(16);
         });
     });
   });
@@ -362,14 +357,3 @@ describe("Delete comment by ID", () => {
     });
   });
 });
-
-/* 
-
-DELETE /api/comments/:comment_id
-Should
-delete the given comment by comment_id
-Responds with
-status 204 and no content
-
-
-*/

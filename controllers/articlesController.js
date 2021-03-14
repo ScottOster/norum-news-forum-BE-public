@@ -21,10 +21,9 @@ exports.patchArticleById = (req, res, next) => {
 };
 
 exports.getMultipleArticles = (req, res, next) => {
-  //console.log("hi from the get articles controller");
   fetchMultipleArticles(req.body)
-    .then((articlesArray) => {
-      res.status(200).send({ articles: articlesArray });
+    .then((articles) => {
+      res.status(200).send(articles);
     })
     .catch(next);
 };

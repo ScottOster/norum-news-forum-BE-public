@@ -2,8 +2,6 @@ const e = require("express");
 const dbConnection = require("../db/connection");
 
 exports.fetchArticleById = (articleObj) => {
-  // console.log(articleObj, "<<<<IN MODEL");
-
   return dbConnection
     .select(
       "articles.author",
@@ -25,7 +23,6 @@ exports.fetchArticleById = (articleObj) => {
 };
 
 exports.patchArticleById = (incVotesObj, articleIdObj) => {
-  console.log("helloooo");
   return dbConnection
     .increment("votes", incVotesObj.inc_votes || 0)
     .from("articles")
@@ -37,8 +34,6 @@ exports.patchArticleById = (incVotesObj, articleIdObj) => {
 };
 
 exports.fetchMultipleArticles = (queryObj) => {
-  console.log(queryObj, "in model");
-
   const sort_by = queryObj.sort_by;
   const order = queryObj.order;
   const author = queryObj.author;
@@ -60,14 +55,18 @@ exports.fetchMultipleArticles = (queryObj) => {
     .modify((querySoFar) => {
       if (author !== undefined && topic !== undefined) {
         querySoFar.where("topic", topic).where("articles.author", author);
-      } else if (author !== undefined && topic == undefined) {
+      } else if (author !== undefined && topic === undefined) {
         querySoFar.where("articles.author", author);
-      } else {
+      } else if ((author === undefined) & (topic !== undefined)) {
         querySoFar.where("topic", topic);
+      } else {
+        querySoFar.then((articles) => {
+          return articles;
+        });
       }
     })
-    .orderBy(sort_by || "date", order || "desc")
-    .then((dbRes) => {
-      return dbRes;
+    .orderBy(sort_by || "created_at", order || "desc")
+    .then((articles) => {
+      return { articles: articles };
     });
 };

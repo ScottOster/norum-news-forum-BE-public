@@ -25,8 +25,9 @@ exports.fetchArticleById = (articleObj) => {
 };
 
 exports.patchArticleById = (incVotesObj, articleIdObj) => {
+  console.log("helloooo");
   return dbConnection
-    .increment("votes", incVotesObj.inc_votes)
+    .increment("votes", incVotesObj.inc_votes || 0)
     .from("articles")
     .where(articleIdObj)
     .returning("*")

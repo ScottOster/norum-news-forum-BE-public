@@ -109,6 +109,15 @@ describe("/articles", () => {
           expect(response.body.msg).toBe("Bad Request");
         });
     });
+
+    it("returns unchanged article when no vote value is specified (negating increment auto increment when value is 0)", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .expect(200)
+        .then((response) => {
+          expect(response.body.article.votes).toEqual(100);
+        });
+    });
   });
 
   describe("api/articles/:article_id/comments", () => {

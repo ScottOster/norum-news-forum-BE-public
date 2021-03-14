@@ -15,7 +15,7 @@ exports.getArticleById = (req, res, next) => {
 exports.patchArticleById = (req, res, next) => {
   patchArticleById(req.body, req.params)
     .then((article) => {
-      res.status(200).send({ article: article });
+      res.status(200).send(article);
     })
     .catch(next);
 };

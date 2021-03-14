@@ -54,7 +54,7 @@ describe("/api", () => {
 });
 
 describe("/articles", () => {
-  describe.only("GET article by id", () => {
+  describe("GET article by id", () => {
     it("returns a 200 and correct object when succesfull", () => {
       return request(app)
         .get("/api/articles/5")
@@ -82,22 +82,21 @@ describe("/articles", () => {
     });
   });
 
-  describe("PATCH article by id", () => {
+  describe.only("PATCH article by id", () => {
     it("returns an updated article with new vote value, with all the correct keys", () => {
       return request(app)
         .patch("/api/articles/1")
         .send({ inc_votes: 100 })
         .expect(200)
         .then((response) => {
-          console.log(response.body.article);
-          expect(response.body.article[0].votes).toEqual(200);
-          expect(response.body.article[0]).toHaveProperty("article_id");
-          expect(response.body.article[0]).toHaveProperty("title");
-          expect(response.body.article[0]).toHaveProperty("body");
-          expect(response.body.article[0]).toHaveProperty("votes");
-          expect(response.body.article[0]).toHaveProperty("topic");
-          expect(response.body.article[0]).toHaveProperty("author");
-          expect(response.body.article[0]).toHaveProperty("created_at");
+          expect(response.body.article.votes).toEqual(200);
+          expect(response.body.article).toHaveProperty("article_id");
+          expect(response.body.article).toHaveProperty("title");
+          expect(response.body.article).toHaveProperty("body");
+          expect(response.body.article).toHaveProperty("votes");
+          expect(response.body.article).toHaveProperty("topic");
+          expect(response.body.article).toHaveProperty("author");
+          expect(response.body.article).toHaveProperty("created_at");
         });
     });
 

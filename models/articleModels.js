@@ -29,7 +29,10 @@ exports.patchArticleById = (incVotesObj, articleIdObj) => {
     .increment("votes", incVotesObj.inc_votes)
     .from("articles")
     .where(articleIdObj)
-    .returning("*");
+    .returning("*")
+    .then(([article]) => {
+      return { article: article };
+    });
 };
 
 exports.fetchMultipleArticles = (queryObj) => {

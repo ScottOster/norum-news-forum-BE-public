@@ -1,10 +1,8 @@
-const topicsRouter = require('express').Router();
-const {getTopics} = require('../controllers/topicsController');
+const topicsRouter = require("express").Router();
+const app = require("../app");
+const { getTopics } = require("../controllers/topicsController");
+const { invalidMethodHandler } = require("../errorHandlers");
 
-
-topicsRouter.get('/', getTopics);
-
+topicsRouter.route("/").get(getTopics).all(invalidMethodHandler);
 
 module.exports = topicsRouter;
-
-

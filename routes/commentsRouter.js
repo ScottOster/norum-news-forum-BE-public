@@ -3,7 +3,12 @@ const {
   patchCommentById,
   deleteCommentById,
 } = require("../controllers/commentsController");
+const { invalidMethodHandler } = require("../errorHandlers");
 
-commentsRouter.patch("/:comment_id", patchCommentById);
-commentsRouter.delete("/:comment_id", deleteCommentById);
+commentsRouter
+  .route("/:comment_id")
+  .patch(patchCommentById)
+  .delete(deleteCommentById)
+  .all(invalidMethodHandler);
+
 module.exports = commentsRouter;

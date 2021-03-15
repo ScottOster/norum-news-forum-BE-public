@@ -352,3 +352,19 @@ describe("Delete comment by ID", () => {
     });
   });
 });
+
+//see promise all for testing all at once !!!!!
+//beginning 405 errors see app.use notes from vel/spreadsheet
+
+describe("handling 405 errors, all paths", () => {
+  describe("DELETE api/topics", () => {
+    it("invalidMethodHandler responds with 405 invalid method ", () => {
+      return request(app)
+        .del("/api/topics")
+        .expect(405)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid Method");
+        });
+    });
+  });
+});

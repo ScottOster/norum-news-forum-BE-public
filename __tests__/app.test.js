@@ -353,11 +353,8 @@ describe("Delete comment by ID", () => {
   });
 });
 
-//see promise all for testing all at once !!!!!
-//beginning 405 errors see app.use notes from vel/spreadsheet
-
 describe("handling 405 errors, all paths", () => {
-  describe("DELETE api/topics", () => {
+  describe("405s api/topics", () => {
     it("invalidMethodHandler responds with 405 invalid method ", () => {
       return request(app)
         .del("/api/topics")
@@ -365,6 +362,100 @@ describe("handling 405 errors, all paths", () => {
         .then(({ body }) => {
           expect(body.msg).toBe("Invalid Method");
         });
+    });
+
+    it("returns 405 for PATCH, POST, PUT requests", () => {
+      const invalidMethods = ["patch", "post", "put"];
+
+      const invMethPromises = invalidMethods.map((meth) => {
+        return request(app)
+          [meth]("/api/topics")
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid Method");
+          });
+      });
+
+      return Promise.all(invMethPromises);
+    });
+  });
+
+  describe("405s api/users", () => {
+    it("returns 405 for PATCH, POST, PUT requests", () => {
+      const invalidMethods = ["patch", "post", "put", "delete"];
+
+      const invMethPromises = invalidMethods.map((meth) => {
+        return request(app)
+          [meth]("/api/users/4")
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid Method");
+          });
+      });
+      return Promise.all(invMethPromises);
+    });
+  });
+
+  describe("405s api/comments/:comment_id", () => {
+    it("returns 405 for POST, PUT requests", () => {
+      const invalidMethods = ["post", "put"];
+
+      const invMethPromises = invalidMethods.map((meth) => {
+        return request(app)
+          [meth]("/api/comments/1")
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid Method");
+          });
+      });
+      return Promise.all(invMethPromises);
+    });
+  });
+
+  describe("405s api/articles/:article_id", () => {
+    it("returns 405 for DELETE, PUT requests", () => {
+      const invalidMethods = ["delete", "put"];
+
+      const invMethPromises = invalidMethods.map((meth) => {
+        return request(app)
+          [meth]("/api/articles/4")
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid Method");
+          });
+      });
+      return Promise.all(invMethPromises);
+    });
+  });
+  describe("405s api/articles/:article_id/comments", () => {
+    it("returns 405 for DELETE, PUT requests", () => {
+      const invalidMethods = ["delete", "put"];
+
+      const invMethPromises = invalidMethods.map((meth) => {
+        return request(app)
+          [meth]("/api/articles/4/comments")
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid Method");
+          });
+      });
+      return Promise.all(invMethPromises);
+    });
+  });
+
+  describe("405s api/articles", () => {
+    it("returns 405 for DELETE, PUT requests", () => {
+      const invalidMethods = ["delete", "put"];
+
+      const invMethPromises = invalidMethods.map((meth) => {
+        return request(app)
+          [meth]("/api/articles/")
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid Method");
+          });
+      });
+      return Promise.all(invMethPromises);
     });
   });
 });

@@ -11,12 +11,18 @@ const {
 
 const { invalidMethodHandler } = require("../errorHandlers");
 
-articlesRouter.get("/:article_id", getArticleById);
-articlesRouter.patch("/:article_id", patchArticleById);
+articlesRouter
+  .route("/:article_id")
+  .get(getArticleById)
+  .patch(patchArticleById)
+  .all(invalidMethodHandler);
 
-articlesRouter.post("/:article_id/comments", postCommentByArticleId);
-articlesRouter.get("/:article_id/comments", getCommentsByArticleId);
-articlesRouter.get("", getMultipleArticles);
-articlesRouter.all(invalidMethodHandler);
+articlesRouter
+  .route("/:article_id/comments")
+  .post(postCommentByArticleId)
+  .get(getCommentsByArticleId)
+  .all(invalidMethodHandler);
+
+articlesRouter.route("").get(getMultipleArticles).all(invalidMethodHandler);
 
 module.exports = articlesRouter;

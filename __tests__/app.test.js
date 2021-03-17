@@ -234,7 +234,7 @@ describe("GET comments by article id", () => {
   });
 });
 
-describe("GET articles", () => {
+describe.only("GET articles", () => {
   describe("/api/articles", () => {
     it("returns an array of Articles with correct props when no queries applied ", () => {
       return request(app)
@@ -303,8 +303,116 @@ describe("GET articles", () => {
           expect(body.msg).toBe("Bad Request");
         });
     });
+
+    it("returns correctly sorted array of articles by author", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({
+          sort_by: "author",
+        })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].author).toBe("rogersop");
+        });
+    });
+
+    it("returns correctly sorted array when passed order ", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({
+          sort_by: "author",
+          order: "asc",
+        })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].author).toBe("butter_bridge");
+        });
+    });
+
+    it("returns correctly sorted array of articles by specific author where author exists ", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({
+          author: "butter_bridge",
+        })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].author).toBe("butter_bridge");
+          expect(body.articles.length).toBe(3);
+        });
+    });
+
+    it("returns correctly sorted array of articles by specific topic where topic exists ", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({
+          author: "rogersop",
+          topic: "cats",
+        })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles[0].topic).toBe("cats");
+          expect(body.articles.length).toBe(1);
+        });
+    });
+    it("gives a 200 status and an empty array when topic does exist, but has no articles assoicated ", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({
+          author: "rogersop",
+          topic: "paper",
+        })
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+          expect(Array.isArray(body.articles)).toBe(true);
+          expect(body.articles.length).toBe(0);
+        });
+    });
+    it("gives a 200 status and an empty array when user does exist, but has no articles assoicated ", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({
+          author: "lurker",
+          topic: "mitch",
+        })
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+          expect(Array.isArray(body.articles)).toBe(true);
+          expect(body.articles.length).toBe(0);
+        });
+    });
+
+    it("throws a rejection when author/user does not exist  ", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({
+          author: "ray_kay_jowling",
+          topic: "mitch",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          console.log({ body });
+
+          expect(body.msg).toBe("user not found");
+        });
+    });
   });
 });
+
+/*new tests from vesl feedback
+  ### GET `/api/articles?topic=mitch`
+
+           ### GET `/api/articles?author=lurker`
+
+            Assertion: expected 404 to equal 200
+
+            Hints:
+            - give a 200 status and an empty array when articles for a topic that does exist, but has no articles is requested
+            - use a separate model to check whether the user exists
+
+*/
 
 describe("PATCH votes by comment id", () => {
   describe("/api/comments/:comment_id", () => {

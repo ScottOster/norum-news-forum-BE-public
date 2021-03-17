@@ -16,3 +16,21 @@ exports.fetchUserByUsername = (user) => {
       }
     });
 };
+exports.checkUserByUsername = (user) => {
+  if (user != undefined) {
+    return connection
+      .select("username")
+      .from("users")
+      .where("username", user)
+      .then((userArray) => {
+        if (!userArray.length) {
+          return Promise.reject({
+            status: 404,
+            msg: "user not found",
+          });
+        } else {
+          return userArray;
+        }
+      });
+  } else return user;
+};

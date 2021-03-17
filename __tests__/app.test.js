@@ -234,7 +234,7 @@ describe("GET comments by article id", () => {
   });
 });
 
-describe.only("GET articles", () => {
+describe("GET articles", () => {
   describe("/api/articles", () => {
     it("returns an array of Articles with correct props when no queries applied ", () => {
       return request(app)
@@ -398,21 +398,23 @@ describe.only("GET articles", () => {
           expect(body.msg).toBe("user not found");
         });
     });
+
+    it("throws a rejection when topic does not exist  ", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({
+          author: "icellusedkars",
+          topic: "nonexistentsubject",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          console.log({ body });
+
+          expect(body.msg).toBe("topic not found");
+        });
+    });
   });
 });
-
-/*new tests from vesl feedback
-  ### GET `/api/articles?topic=mitch`
-
-           ### GET `/api/articles?author=lurker`
-
-            Assertion: expected 404 to equal 200
-
-            Hints:
-            - give a 200 status and an empty array when articles for a topic that does exist, but has no articles is requested
-            - use a separate model to check whether the user exists
-
-*/
 
 describe("PATCH votes by comment id", () => {
   describe("/api/comments/:comment_id", () => {

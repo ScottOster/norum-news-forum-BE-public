@@ -62,5 +62,13 @@ exports.eraseCommentById = (commentId) => {
     .from("comments")
     .where("comment_id", commentId.comment_id)
     .del()
-    .returning("*");
+    .returning("*")
+    .then((dbRes) => {
+      if (!dbRes.length) {
+        return Promise.reject({
+          status: 400,
+          msg: "Bad Request",
+        });
+      }
+    });
 };

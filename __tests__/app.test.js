@@ -57,7 +57,7 @@ describe("/articles", () => {
   describe("GET article by id", () => {
     it("returns a 200 and correct object when succesfull", () => {
       return request(app)
-        .get("/api/articles/5")
+        .get("/api/articles/1")
         .expect(200)
         .then(({ body }) => {
           expect(body.article).toHaveProperty("author");
@@ -446,7 +446,7 @@ describe("PATCH votes by comment id", () => {
   });
 });
 
-describe("Delete comment by ID", () => {
+describe.only("Delete comment by ID", () => {
   describe("/api/comments/:comment_id", () => {
     it("should delete given comment and return status 204", () => {
       return request(app).delete("/api/comments/14").expect(204);
@@ -459,6 +459,15 @@ describe("Delete comment by ID", () => {
         .delete("/api/comments/2")
         .expect(204)
         .then((res) => {});
+    });
+
+    it("should return a 400 bad request when delete contains invalid comment_id", () => {
+      return request(app)
+        .delete("/api/comments/9999")
+        .expect(400)
+        .then((res) => {
+          expect(res.body.msg).toBe("Bad Request");
+        });
     });
   });
 });

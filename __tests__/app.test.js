@@ -236,7 +236,7 @@ describe("GET comments by article id", () => {
   });
 });
 
-describe("GET articles", () => {
+describe.only("GET articles", () => {
   describe("/api/articles", () => {
     it("returns an array of Articles with correct props when no queries applied ", () => {
       return request(app)
@@ -415,13 +415,66 @@ describe("GET articles", () => {
           expect(body.msg).toBe("topic not found");
         });
     });
+  });
+});
 
-    it("returns a 400 bad request when comment id not valid ", () => {
+describe.only("GET articles - PAGINATION TESTS", () => {
+  describe("api/articles", () => {
+    it("should limit the number of articles returned when passed a limt and start page", () => {
       return request(app)
-        .patch("/api/comments/jdhjhdhj")
-        .expect(400)
+        .get("/api/articles")
+        .send({ limit: 5, p: 1 })
+        .expect(200)
         .then(({ body }) => {
-          expect(body.msg).toBe("Bad Request");
+          expect(body.articles.length).toBe(5);
+        });
+    });
+
+    it("should limit the number of articles returned when applied along with filters, and offset correct pages/results", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({
+          author: "icellusedkars",
+          limit: 2,
+          p: 2,
+          sort_by: "article_id",
+        })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(2);
+          expect(body.articles[0].author).toBe("icellusedkars");
+          expect(body.articles[1].author).toBe("icellusedkars");
+          expect(body.articles[0].title).toBe("Z");
+        });
+    });
+
+    it("should work for multiple page/limit arguments", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({
+          limit: 2,
+          p: 3,
+          sort_by: "article_id",
+          order: "asc",
+        })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(2);
+          expect(body.articles[0].title).toBe(
+            "UNCOVERED: catspiracy to bring down democracy"
+          );
+          expect(body.articles[1].title).toBe("A");
+        });
+    });
+
+    it("should have a total count property that shows the total number of articles (after filter applied disregarding limit)", () => {
+      return request(app)
+        .get("/api/articles")
+        .send({ author: "icellusedkars", limit: 2, p: 2 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles.length).toBe(2);
+          expect(body.articles[0].total_articles_count).toBe(6);
         });
     });
   });

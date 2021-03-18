@@ -58,6 +58,9 @@ exports.fetchMultipleArticles = (queryObj) => {
   const order = queryObj.order;
   const author = queryObj.author;
   const topic = queryObj.topic;
+  const limit = queryObj.limit;
+  const countOffset = (queryObj.p - 1) * limit;
+  const ommittedArticles = queryObj.p * limit;
 
   return dbConnection
     .select(
@@ -86,7 +89,18 @@ exports.fetchMultipleArticles = (queryObj) => {
       }
     })
     .orderBy(sort_by || "created_at", order || "desc")
+    .modify((querySoFar) => {
+      if (limit != undefined) {
+        querySoFar.limit(limit).offset(countOffset);
+      }
+    })
+
     .then((articles) => {
+      for (arti in articles) {
+        articles[arti].total_articles_count =
+          articles.length + ommittedArticles;
+      }
+
       return { articles: articles };
     });
 };

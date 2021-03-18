@@ -236,7 +236,33 @@ describe("GET comments by article id", () => {
   });
 });
 
-describe.only("GET articles", () => {
+describe("PAGINATION TESTS GET comments by ID", () => {
+  describe("/api/articles/:article_id/comments", () => {
+    it("should respond with status 200 and limited number of comments  ", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .send({ sort_by: "comment_id", order: "asc", limit: 2, p: 2 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body[0].comment_id).toEqual(4);
+        });
+    });
+
+    it("should respond with status 200 and limited number of comments  ", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .send({ sort_by: "comment_id", order: "asc", limit: 3, p: 3 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body[0].comment_id).toEqual(8);
+          expect(body[1].comment_id).toEqual(9);
+          expect(body[2].comment_id).toEqual(10);
+        });
+    });
+  });
+});
+
+describe("GET articles", () => {
   describe("/api/articles", () => {
     it("returns an array of Articles with correct props when no queries applied ", () => {
       return request(app)
@@ -418,7 +444,7 @@ describe.only("GET articles", () => {
   });
 });
 
-describe.only("GET articles - PAGINATION TESTS", () => {
+describe("GET articles - PAGINATION TESTS", () => {
   describe("api/articles", () => {
     it("should limit the number of articles returned when passed a limt and start page", () => {
       return request(app)

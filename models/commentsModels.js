@@ -27,12 +27,19 @@ exports.createCommentByArticleId = (userCommentObj, articleIdObj) => {
 exports.fetchCommentsByArticleId = (querysObj, articleObj) => {
   const order = querysObj.order;
   const sort_by = querysObj.sort_by;
+  const limit = querysObj.limit;
+  const countOffset = (querysObj.p - 1) * limit;
 
   return dbConnection
     .select("*")
     .from("comments")
     .where(articleObj)
     .orderBy(sort_by || "created_at", order || "desc")
+    .modify((querySoFar) => {
+      if (limit != undefined) {
+        querySoFar.limit(limit).offset(countOffset);
+      }
+    })
     .then((commenstArray) => {
       if (!commenstArray.length) {
         return Promise.reject({

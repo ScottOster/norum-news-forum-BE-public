@@ -27,7 +27,7 @@ exports.seed = function (knex) {
         const newArticle = { ...article };
         newArticle.created_at = reFormatTimeStamp(newArticle.created_at);
         return newArticle;
-      });
+      }); /// make a function to do this in utils and test
 
       return knex("articles").insert(newArticleData).returning("*");
     })

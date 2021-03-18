@@ -22,15 +22,35 @@ exports.fetchArticleById = (articleObj) => {
     });
 };
 
-exports.patchArticleById = (incVotesObj, articleIdObj) => {
-  return dbConnection
-    .increment("votes", incVotesObj.inc_votes || 0)
-    .from("articles")
-    .where(articleIdObj)
-    .returning("*")
-    .then(([article]) => {
-      return { article: article };
-    });
+exports.patchArticleById = (queryObj, articleIdObj) => {
+  if (queryObj.inc_votes != undefined) {
+    return dbConnection
+      .increment("votes", queryObj.inc_votes || 0)
+      .from("articles")
+      .where(articleIdObj)
+      .returning("*")
+      .then(([article]) => {
+        return { article: article };
+      });
+  } else if (queryObj.new_Text != undefined) {
+    return dbConnection
+      .update({ body: queryObj.new_Text })
+      .from("articles")
+      .where(articleIdObj)
+      .returning("*")
+      .then(([article]) => {
+        return { article: article };
+      });
+  } else {
+    return dbConnection
+      .select("*")
+      .from("articles")
+      .where(articleIdObj)
+      .returning("*")
+      .then(([article]) => {
+        return { article: article };
+      });
+  }
 };
 
 exports.fetchMultipleArticles = (queryObj) => {

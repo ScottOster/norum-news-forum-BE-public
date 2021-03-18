@@ -44,15 +44,35 @@ exports.fetchCommentsByArticleId = (querysObj, articleObj) => {
     });
 };
 
-exports.updateCommentVotesById = (votesObj, commentIdObj) => {
-  return dbConnection
-    .increment("votes", votesObj.inc_votes || 0)
-    .from("comments")
-    .where(commentIdObj)
-    .returning("*")
-    .then(([comment]) => {
-      return { comment: comment };
-    });
+exports.updateCommentById = (queryObj, commentIdObj) => {
+  if (queryObj.inc_votes != undefined) {
+    return dbConnection
+      .increment("votes", queryObj.inc_votes || 0)
+      .from("comments")
+      .where(commentIdObj)
+      .returning("*")
+      .then(([comment]) => {
+        return { comment: comment };
+      });
+  } else if (queryObj.new_Text != undefined) {
+    return dbConnection
+      .update({ body: queryObj.new_Text })
+      .from("comments")
+      .where(commentIdObj)
+      .returning("*")
+      .then(([comment]) => {
+        return { comment: comment };
+      });
+  } else {
+    return dbConnection
+      .select("*")
+      .from("comments")
+      .where(commentIdObj)
+      .returning("*")
+      .then(([comment]) => {
+        return { comment: comment };
+      });
+  }
 };
 
 exports.eraseCommentById = (commentId) => {

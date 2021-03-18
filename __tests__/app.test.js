@@ -65,7 +65,9 @@ describe("/articles", () => {
           expect(body.article).toHaveProperty("article_id");
           expect(body.article).toHaveProperty("body");
           expect(body.article).toHaveProperty("topic");
-          expect(body.article).toHaveProperty("created_at");
+          expect(body.article.created_at.toString()).toEqual(
+            "2018-11-15T12:21:54.171Z"
+          );
           expect(body.article).toHaveProperty("votes");
           expect(body.article).toHaveProperty("comment_count");
         });
@@ -120,7 +122,7 @@ describe("/articles", () => {
   });
 
   describe("api/articles/:article_id/comments", () => {
-    describe("POST article by username", () => {
+    describe("POST comment by article id", () => {
       it("recieves a 201 and copy of comment with correct properties when post is successful", () => {
         return request(app)
           .post("/api/articles/1/comments")
@@ -193,7 +195,7 @@ describe("GET comments by article id", () => {
             author: "butter_bridge",
             article_id: 1,
             votes: 14,
-            created_at: "2016-11-22T12:36:03.000Z",
+            created_at: "2016-11-22T12:36:03.389Z",
             body:
               "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
           });
@@ -413,6 +415,15 @@ describe("GET articles", () => {
           expect(body.msg).toBe("topic not found");
         });
     });
+
+    it("returns a 400 bad request when comment id not valid ", () => {
+      return request(app)
+        .patch("/api/comments/jdhjhdhj")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
   });
 });
 
@@ -443,10 +454,42 @@ describe("PATCH votes by comment id", () => {
           expect(body.comment.votes).toBe(16);
         });
     });
+
+    it("returns a 400 bad request when comment id not valid ", () => {
+      return request(app)
+        .patch("/api/comments/jdhjhdhj")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Bad Request");
+        });
+    });
   });
 });
 
-describe.only("Delete comment by ID", () => {
+describe("PATCH comment body by comment ID", () => {
+  describe("/api/comments/:comment_id", () => {
+    it("sends status 200 and update comment when passed valid query", () => {
+      return request(app)
+        .patch("/api/comments/7")
+        .send({ new_Text: "I saved the lobster from the lobster pot" })
+        .then(({ body }) => {
+          expect(body.comment.body).toBe(
+            "I saved the lobster from the lobster pot"
+          );
+        });
+    });
+    it("returns a 200 and does not change body, when no new text value is passed", () => {
+      return request(app)
+        .patch("/api/comments/7")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.comment.body).toBe("Lobster pot");
+        });
+    });
+  });
+});
+
+describe("Delete comment by ID", () => {
   describe("/api/comments/:comment_id", () => {
     it("should delete given comment and return status 204", () => {
       return request(app).delete("/api/comments/14").expect(204);
@@ -471,6 +514,47 @@ describe.only("Delete comment by ID", () => {
     });
   });
 });
+
+describe("PATCH article body by id", () => {
+  describe("PATCH api/articles/:article_id", () => {
+    it("should return a 200 with updated article ", () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send({ new_Text: "of pugs" })
+        .then(({ body }) => {
+          expect(body.article).toHaveProperty("article_id");
+          expect(body.article).toHaveProperty("title");
+          expect(body.article.body).toBe("of pugs");
+          expect(body.article).toHaveProperty("votes");
+          expect(body.article).toHaveProperty("topic");
+          expect(body.article).toHaveProperty("author");
+          expect(body.article).toHaveProperty("created_at");
+          console.log(body);
+        });
+    });
+  });
+
+  it("responds with 400 bad request when article id value is invalid (not a num)", () => {
+    return request(app)
+      .patch("/api/articles/gdhgshdgdh")
+      .send({ new_Text: "of pugs" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad Request");
+      });
+  });
+
+  it("returns unchanged article when no body text is specified ", () => {
+    return request(app)
+      .patch("/api/articles/3")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article.body).toBe("some gifs");
+      });
+  });
+});
+
+//3 | Eight pug gifs that remind me of mitch                 | some gifs
 
 describe("handling 405 errors, all paths", () => {
   describe("405s api/topics", () => {

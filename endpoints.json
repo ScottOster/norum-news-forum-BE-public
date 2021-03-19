@@ -6,22 +6,120 @@
     "description": "serves an array of all topics",
     "queries": [],
     "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
+      "topics": [
+        { "description": "The man, the Mitch, the legend", "slug": "mitch" },
+        { "description": "Not dogs", "slug": "cats" },
+        { "description": "what books are made of", "slug": "paper" }
+      ]
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
-    "exampleResponse": {
+    "description": "serves an array of all articles, or an array of filtered articles when queries provided. Supports pagination.",
+    "queries": ["author", "topic", "sort_by", "order", "limit", "p"],
+    "example response": {
       "articles": [
         {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": 1527695953341
+          "author": "butter_bridge",
+          "title": "Living in the shadow of a great man",
+          "article_id": 1,
+          "topic": "mitch",
+          "created_at": "2018-11-15T12:21:54.171Z",
+          "votes": 100,
+          "comment_count": "13",
+          "total_articles_count": 10
         }
       ]
+    }
+  },
+  "GET api/articles/:article_id": {
+    "description": "serves an array of articles with a particular ID",
+    "queries": "NA",
+    "example response": {
+      "article": {
+        "author": "butter_bridge",
+        "title": "Living in the shadow of a great man",
+        "article_id": 1,
+        "body": "I find this existence challenging",
+        "topic": "mitch",
+        "created_at": "2018-11-15T12:21:54.171Z",
+        "votes": 100,
+        "comment_count": "13"
+      }
+    }
+  },
+  "PATCH api/articles/:article_id": {
+    "description": "allows editing of the article body, or number of votes and returns updated article",
+    "queries": ["new_Text, inc_votes"],
+    "example response": {
+      "article": {
+        "article_id": 1,
+        "title": "Living in the shadow of a great man",
+        "body": "I find this existence challenging",
+        "votes": 200,
+        "topic": "mitch",
+        "author": "butter_bridge",
+        "created_at": "2018-11-15T12:21:54.171Z"
+      }
+    }
+  },
+  "GET api/articles/:article_id/comments": {
+    "description": "returns an array of all comments related to particular article. Defaults to sorted by “created_at” in descending order. Pagination ready.",
+    "queries": ["sort_by, order, limit, p"],
+    "example response": [
+      {
+        "comment_id": 2,
+        "author": "butter_bridge",
+        "article_id": 1,
+        "votes": 14,
+        "created_at": "2016-11-22T12:36:03.389Z",
+        "body": "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky."
+      }
+    ]
+  },
+  "POST api/articles/:article_id/comments": {
+    "description": "creates a new comment relating to particular article, and returns the posted comment.",
+    "queries": ["username, body"],
+    "example response": {
+      "postedComment": [
+        {
+          "comment_id": 19,
+          "author": "icellusedkars",
+          "article_id": 1,
+          "votes": 0,
+          "created_at": "2021-03-19T13:19:19.654Z",
+          "body": "if this comment makes it in ill eat my hat"
+        }
+      ]
+    }
+  },
+
+  "PATCH api/comments/:comment_id": {
+    "description": "allows editing of a comments votes amount , and returns a copy of the updated comment",
+    "queries": ["inc_votes"],
+    "example response": {
+      "comment": {
+        "comment_id": 18,
+        "author": "butter_bridge",
+        "article_id": 1,
+        "votes": 26,
+        "created_at": "2000-11-26T12:36:03.389Z",
+        "body": "This morning, I showered for nine minutes."
+      }
+    }
+  },
+  "DELETE api/comments/:comment_id": {
+    "description": "allows deletion of comment by comment ID.",
+    "queries": ["NA"]
+  },
+  "GET api/users/:username": {
+    "description": "finds user by username and returns single user object",
+    "queries": ["NA"],
+    "example response": {
+      "user": {
+        "username": "butter_bridge",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+        "name": "jonny"
+      }
     }
   }
 }

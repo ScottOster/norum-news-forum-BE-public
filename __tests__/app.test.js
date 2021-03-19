@@ -37,7 +37,8 @@ describe("/api", () => {
           .get("/api/users/butter_bridge")
           .expect(200)
           .then(({ body }) => {
-            expect(body.user[0].name).toEqual("jonny");
+            console.log(JSON.stringify(body));
+            expect(body.user.name).toEqual("jonny");
           });
       });
 
@@ -632,8 +633,6 @@ describe("PATCH article body by id", () => {
       });
   });
 });
-
-//3 | Eight pug gifs that remind me of mitch                 | some gifs
 
 describe("handling 405 errors, all paths", () => {
   describe("405s api/topics", () => {

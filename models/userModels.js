@@ -12,7 +12,7 @@ exports.fetchUserByUsername = (user) => {
           msg: "user not found",
         });
       } else {
-        return userArray;
+        return { user: userArray[0] };
       }
     });
 };

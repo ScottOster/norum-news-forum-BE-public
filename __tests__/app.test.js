@@ -37,7 +37,6 @@ describe("/api", () => {
           .get("/api/users/butter_bridge")
           .expect(200)
           .then(({ body }) => {
-            console.log(JSON.stringify(body));
             expect(body.user.name).toEqual("jonny");
           });
       });
@@ -393,7 +392,6 @@ describe("GET articles", () => {
         })
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           expect(Array.isArray(body.articles)).toBe(true);
           expect(body.articles.length).toBe(0);
         });
@@ -407,7 +405,6 @@ describe("GET articles", () => {
         })
         .expect(200)
         .then(({ body }) => {
-          console.log(body);
           expect(Array.isArray(body.articles)).toBe(true);
           expect(body.articles.length).toBe(0);
         });
@@ -422,8 +419,6 @@ describe("GET articles", () => {
         })
         .expect(404)
         .then(({ body }) => {
-          console.log({ body });
-
           expect(body.msg).toBe("user not found");
         });
     });
@@ -437,8 +432,6 @@ describe("GET articles", () => {
         })
         .expect(404)
         .then(({ body }) => {
-          console.log({ body });
-
           expect(body.msg).toBe("topic not found");
         });
     });
@@ -609,7 +602,6 @@ describe("PATCH article body by id", () => {
           expect(body.article).toHaveProperty("topic");
           expect(body.article).toHaveProperty("author");
           expect(body.article).toHaveProperty("created_at");
-          console.log(body);
         });
     });
   });
@@ -738,5 +730,17 @@ describe("handling 405 errors, all paths", () => {
       });
       return Promise.all(invMethPromises);
     });
+  });
+});
+
+describe("GET /api", () => {
+  it("respond with detailed json file of all available endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        expect(typeof body).toBe("object");
+        expect(Object.keys(body).length).toEqual(10);
+      });
   });
 });

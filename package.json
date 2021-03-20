@@ -32,11 +32,11 @@
     "express": "^4.17.1",
     "jest-sorted": "^1.0.11",
     "pg": "^8.5.1",
-    "sorted": "^0.1.1"
+    "sorted": "^0.1.1",
+    "knex": "^0.95.2"
   },
   "devDependencies": {
     "jest": "^26.6.3",
-    "knex": "^0.95.1",
     "supertest": "^6.1.3"
   }
 }

@@ -13,7 +13,6 @@ const {
 } = require("../utils/data-manipulation");
 
 exports.seed = function (knex) {
-  console.log(process.env, process.env.NODE_ENV);
   return knex.migrate
     .rollback()
     .then(() => knex.migrate.latest())

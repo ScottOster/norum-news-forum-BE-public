@@ -8,7 +8,7 @@ const dbConfig =
         connection: {
           connectionString: process.env.DATABASE_URL,
           ssl: {
-            rejectUnauthorised: false,
+            rejectUnauthorized: false,
           },
         },
       }

@@ -6,7 +6,7 @@ const dbConfig =
     ? {
         client: "pg",
         connection: {
-          connectionstring: process.env.DATABASE_URL,
+          connectionString: process.env.DATABASE_URL,
           ssl: {
             rejectUnauthorised: false,
           },

@@ -3,7 +3,7 @@ const {
   fetchCommentsByArticleId,
   updateCommentById,
   eraseCommentById,
-} = require("../models/commentsModels.js");
+} = require('../models/commentsModels.js');
 
 exports.postCommentByArticleId = (req, res, next) => {
   createCommentByArticleId(req.body, req.params)
@@ -14,7 +14,8 @@ exports.postCommentByArticleId = (req, res, next) => {
 };
 
 exports.getCommentsByArticleId = (req, res, next) => {
-  fetchCommentsByArticleId(req.body, req.params)
+  console.log(req.query, req.params);
+  fetchCommentsByArticleId(req.query, req.params)
     .then((commentsArray) => {
       res.status(200).send(commentsArray);
     })

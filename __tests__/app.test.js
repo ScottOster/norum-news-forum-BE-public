@@ -184,27 +184,30 @@ describe('/articles', () => {
 
 describe.only('GET comments by article id', () => {
   describe('GET /api/articles/:article_id/comments', () => {
-    it('should respond with status 200 and array of of all comments for given id, sorted in correct order  ', () => {
-      return request(app)
-        .get('/api/articles/1/comments')
-        .query({ sort_by: 'comment_id', order: 'asc' })
-        .expect(200)
-        .then(({ body }) => {
-          expect(body[0]).toMatchObject({
-            comment_id: 2,
-            author: 'butter_bridge',
-            article_id: 1,
-            votes: 14,
-            created_at: '2016-11-22T12:36:03.389Z',
-            body:
-              'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
-          });
+    it.only('should respond with status 200 and array of of all comments for given id, sorted in correct order  ', () => {
+      return (
+        request(app)
+          .get('/api/articles/1/comments?sort_by=comment_id&order=asc')
+          //  .query({ sort_by: 'comment_id', order: 'asc' })
+          .expect(200)
+          .then(({ body }) => {
+            console.log(body);
+            expect(body[0]).toMatchObject({
+              comment_id: 2,
+              author: 'butter_bridge',
+              article_id: 1,
+              votes: 14,
+              created_at: '2016-11-22T12:36:03.389Z',
+              body:
+                'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
+            });
 
-          expect(body[0].comment_id < body[1].comment_id).toBe(true);
-        });
+            expect(body[0].comment_id < body[1].comment_id).toBe(true);
+          })
+      );
     });
 
-    it.only('should respond with array of of all comments for given id, sorted in correct order', () => {
+    it('should respond with array of of all comments for given id, sorted in correct order', () => {
       return request(app)
         .get('/api/articles/1/comments')
         .query({ sort_by: 'votes', order: 'asc' })
@@ -214,7 +217,7 @@ describe.only('GET comments by article id', () => {
         });
     });
 
-    it.only('should respond with 400 bad req when incorrect format article id passed', () => {
+    it('should respond with 400 bad req when incorrect format article id passed', () => {
       return request(app)
         .get('/api/articles/hxbhx/comments')
         .query({ sort_by: 'votes', order: 'asc' })
@@ -224,7 +227,7 @@ describe.only('GET comments by article id', () => {
         });
     });
 
-    it.only('should respond with 404 bad req when article id passed but does not exist', () => {
+    it('should respond with 404 bad req when article id passed but does not exist', () => {
       return request(app)
         .get('/api/articles/9999/comments')
         .query({ sort_by: 'votes', order: 'asc' })

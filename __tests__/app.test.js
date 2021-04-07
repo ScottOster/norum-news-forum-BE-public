@@ -262,7 +262,7 @@ describe('PAGINATION TESTS GET comments by ID', () => {
   });
 });
 
-describe.only('GET articles', () => {
+describe('GET articles', () => {
   describe('/api/articles', () => {
     it('returns an array of Articles with correct props when no queries applied ', () => {
       return request(app)
@@ -438,7 +438,7 @@ describe.only('GET articles', () => {
   });
 });
 
-describe.only('GET articles - PAGINATION TESTS', () => {
+describe('GET articles - PAGINATION TESTS', () => {
   describe('api/articles', () => {
     it('should limit the number of articles returned when passed a limt and start page', () => {
       return request(app)

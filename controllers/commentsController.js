@@ -14,7 +14,6 @@ exports.postCommentByArticleId = (req, res, next) => {
 };
 
 exports.getCommentsByArticleId = (req, res, next) => {
-  console.log(req.query, req.params);
   fetchCommentsByArticleId(req.query, req.params)
     .then((commentsArray) => {
       res.status(200).send(commentsArray);

@@ -182,29 +182,26 @@ describe('/articles', () => {
   });
 });
 
-describe.only('GET comments by article id', () => {
+describe('GET comments by article id', () => {
   describe('GET /api/articles/:article_id/comments', () => {
-    it.only('should respond with status 200 and array of of all comments for given id, sorted in correct order  ', () => {
-      return (
-        request(app)
-          .get('/api/articles/1/comments?sort_by=comment_id&order=asc')
-          //  .query({ sort_by: 'comment_id', order: 'asc' })
-          .expect(200)
-          .then(({ body }) => {
-            console.log(body);
-            expect(body[0]).toMatchObject({
-              comment_id: 2,
-              author: 'butter_bridge',
-              article_id: 1,
-              votes: 14,
-              created_at: '2016-11-22T12:36:03.389Z',
-              body:
-                'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
-            });
+    it('should respond with status 200 and array of of all comments for given id, sorted in correct order  ', () => {
+      return request(app)
+        .get('/api/articles/1/comments?sort_by=comment_id&order=asc')
 
-            expect(body[0].comment_id < body[1].comment_id).toBe(true);
-          })
-      );
+        .expect(200)
+        .then(({ body }) => {
+          expect(body[0]).toMatchObject({
+            comment_id: 2,
+            author: 'butter_bridge',
+            article_id: 1,
+            votes: 14,
+            created_at: '2016-11-22T12:36:03.389Z',
+            body:
+              'The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.',
+          });
+
+          expect(body[0].comment_id < body[1].comment_id).toBe(true);
+        });
     });
 
     it('should respond with array of of all comments for given id, sorted in correct order', () => {
@@ -244,7 +241,7 @@ describe('PAGINATION TESTS GET comments by ID', () => {
     it('should respond with status 200 and limited number of comments  ', () => {
       return request(app)
         .get('/api/articles/1/comments')
-        .send({ sort_by: 'comment_id', order: 'asc', limit: 2, p: 2 })
+        .query({ sort_by: 'comment_id', order: 'asc', limit: 2, p: 2 })
         .expect(200)
         .then(({ body }) => {
           expect(body[0].comment_id).toEqual(4);
@@ -254,7 +251,7 @@ describe('PAGINATION TESTS GET comments by ID', () => {
     it('should respond with status 200 and limited number of comments  ', () => {
       return request(app)
         .get('/api/articles/1/comments')
-        .send({ sort_by: 'comment_id', order: 'asc', limit: 3, p: 3 })
+        .query({ sort_by: 'comment_id', order: 'asc', limit: 3, p: 3 })
         .expect(200)
         .then(({ body }) => {
           expect(body[0].comment_id).toEqual(8);
@@ -265,7 +262,7 @@ describe('PAGINATION TESTS GET comments by ID', () => {
   });
 });
 
-describe('GET articles', () => {
+describe.only('GET articles', () => {
   describe('/api/articles', () => {
     it('returns an array of Articles with correct props when no queries applied ', () => {
       return request(app)
@@ -286,7 +283,7 @@ describe('GET articles', () => {
     it('returns correctly filtered array of articles when queries applied', () => {
       return request(app)
         .get('/api/articles')
-        .send({
+        .query({
           sort_by: ' article_id',
           order: 'asc',
           author: 'rogersop',
@@ -303,7 +300,7 @@ describe('GET articles', () => {
     it('returns correctly filtered sorted and ordered array of articles when all queries applied', () => {
       return request(app)
         .get('/api/articles')
-        .send({
+        .query({
           sort_by: ' article_id',
           order: 'asc',
           author: 'icellusedkars',
@@ -323,7 +320,7 @@ describe('GET articles', () => {
     it('returns 400 bad request when trying to sort by a column that doesnt exist ', () => {
       return request(app)
         .get('/api/articles')
-        .send({
+        .query({
           sort_by: 'blood_type',
           order: 'asc',
           author: 'icellusedkars',
@@ -338,7 +335,7 @@ describe('GET articles', () => {
     it('returns correctly sorted array of articles by author', () => {
       return request(app)
         .get('/api/articles')
-        .send({
+        .query({
           sort_by: 'author',
         })
         .expect(200)
@@ -350,7 +347,7 @@ describe('GET articles', () => {
     it('returns correctly sorted array when passed order ', () => {
       return request(app)
         .get('/api/articles')
-        .send({
+        .query({
           sort_by: 'author',
           order: 'asc',
         })
@@ -363,7 +360,7 @@ describe('GET articles', () => {
     it('returns correctly sorted array of articles by specific author where author exists ', () => {
       return request(app)
         .get('/api/articles')
-        .send({
+        .query({
           author: 'butter_bridge',
         })
         .expect(200)
@@ -376,7 +373,7 @@ describe('GET articles', () => {
     it('returns correctly sorted array of articles by specific topic where topic exists ', () => {
       return request(app)
         .get('/api/articles')
-        .send({
+        .query({
           author: 'rogersop',
           topic: 'cats',
         })
@@ -389,7 +386,7 @@ describe('GET articles', () => {
     it('gives a 200 status and an empty array when topic does exist, but has no articles assoicated ', () => {
       return request(app)
         .get('/api/articles')
-        .send({
+        .query({
           author: 'rogersop',
           topic: 'paper',
         })
@@ -402,7 +399,7 @@ describe('GET articles', () => {
     it('gives a 200 status and an empty array when user does exist, but has no articles assoicated ', () => {
       return request(app)
         .get('/api/articles')
-        .send({
+        .query({
           author: 'lurker',
           topic: 'mitch',
         })
@@ -416,7 +413,7 @@ describe('GET articles', () => {
     it('throws a rejection when author/user does not exist  ', () => {
       return request(app)
         .get('/api/articles')
-        .send({
+        .query({
           author: 'ray_kay_jowling',
           topic: 'mitch',
         })
@@ -429,7 +426,7 @@ describe('GET articles', () => {
     it('throws a rejection when topic does not exist  ', () => {
       return request(app)
         .get('/api/articles')
-        .send({
+        .query({
           author: 'icellusedkars',
           topic: 'nonexistentsubject',
         })
@@ -441,12 +438,12 @@ describe('GET articles', () => {
   });
 });
 
-describe('GET articles - PAGINATION TESTS', () => {
+describe.only('GET articles - PAGINATION TESTS', () => {
   describe('api/articles', () => {
     it('should limit the number of articles returned when passed a limt and start page', () => {
       return request(app)
         .get('/api/articles')
-        .send({ limit: 5, p: 1 })
+        .query({ limit: 5, p: 1 })
         .expect(200)
         .then(({ body }) => {
           expect(body.articles.length).toBe(5);
@@ -456,7 +453,7 @@ describe('GET articles - PAGINATION TESTS', () => {
     it('should limit the number of articles returned when applied along with filters, and offset correct pages/results', () => {
       return request(app)
         .get('/api/articles')
-        .send({
+        .query({
           author: 'icellusedkars',
           limit: 2,
           p: 2,
@@ -474,7 +471,7 @@ describe('GET articles - PAGINATION TESTS', () => {
     it('should work for multiple page/limit arguments', () => {
       return request(app)
         .get('/api/articles')
-        .send({
+        .query({
           limit: 2,
           p: 3,
           sort_by: 'article_id',
@@ -493,7 +490,7 @@ describe('GET articles - PAGINATION TESTS', () => {
     it('should have a total count property that shows the total number of articles (after filter applied disregarding limit)', () => {
       return request(app)
         .get('/api/articles')
-        .send({ author: 'icellusedkars', limit: 2, p: 2 })
+        .query({ author: 'icellusedkars', limit: 2, p: 2 })
         .expect(200)
         .then(({ body }) => {
           expect(body.articles.length).toBe(2);

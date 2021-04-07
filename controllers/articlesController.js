@@ -2,10 +2,10 @@ const {
   fetchArticleById,
   patchArticleById,
   fetchMultipleArticles,
-} = require("../models/articleModels.js");
+} = require('../models/articleModels.js');
 
-const { checkUserByUsername } = require("../models/userModels");
-const { checkTopicBySlug } = require("../models/topicModels");
+const { checkUserByUsername } = require('../models/userModels');
+const { checkTopicBySlug } = require('../models/topicModels');
 exports.getArticleById = (req, res, next) => {
   fetchArticleById(req.params)
     .then((article) => {
@@ -23,9 +23,9 @@ exports.patchArticleById = (req, res, next) => {
 };
 
 exports.getMultipleArticles = (req, res, next) => {
-  const checkTopic = checkTopicBySlug(req.body.topic);
-  const checkUser = checkUserByUsername(req.body.author);
-  const dbResults = fetchMultipleArticles(req.body);
+  const checkTopic = checkTopicBySlug(req.query.topic);
+  const checkUser = checkUserByUsername(req.query.author);
+  const dbResults = fetchMultipleArticles(req.query);
 
   const promises = Promise.all([checkTopic, checkUser, dbResults]);
 

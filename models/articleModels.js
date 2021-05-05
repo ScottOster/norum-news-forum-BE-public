@@ -1,22 +1,23 @@
-const e = require("express");
-const dbConnection = require("../db/connection");
+const e = require('express');
+const dbConnection = require('../db/connection');
+const { reFormatTimeStamp } = require('../db/utils/data-manipulation');
 
 exports.fetchArticleById = (articleObj) => {
   return dbConnection
     .select(
-      "articles.author",
-      "title",
-      "articles.article_id",
-      "articles.body",
-      "topic",
-      "articles.created_at",
-      "articles.votes"
+      'articles.author',
+      'title',
+      'articles.article_id',
+      'articles.body',
+      'topic',
+      'articles.created_at',
+      'articles.votes'
     )
-    .count("comments.article_id", { as: "comment_count" })
-    .from("articles")
-    .leftJoin("comments", "articles.article_id", "=", "comments.article_id")
-    .where("articles.article_id", "=", articleObj.article_id)
-    .groupBy("articles.article_id")
+    .count('comments.article_id', { as: 'comment_count' })
+    .from('articles')
+    .leftJoin('comments', 'articles.article_id', '=', 'comments.article_id')
+    .where('articles.article_id', '=', articleObj.article_id)
+    .groupBy('articles.article_id')
     .then(([dbRes]) => {
       return { article: dbRes };
     });
@@ -25,28 +26,28 @@ exports.fetchArticleById = (articleObj) => {
 exports.patchArticleById = (queryObj, articleIdObj) => {
   if (queryObj.inc_votes != undefined) {
     return dbConnection
-      .increment("votes", queryObj.inc_votes || 0)
-      .from("articles")
+      .increment('votes', queryObj.inc_votes || 0)
+      .from('articles')
       .where(articleIdObj)
-      .returning("*")
+      .returning('*')
       .then(([article]) => {
         return { article: article };
       });
   } else if (queryObj.new_Text != undefined) {
     return dbConnection
       .update({ body: queryObj.new_Text })
-      .from("articles")
+      .from('articles')
       .where(articleIdObj)
-      .returning("*")
+      .returning('*')
       .then(([article]) => {
         return { article: article };
       });
   } else {
     return dbConnection
-      .select("*")
-      .from("articles")
+      .select('*')
+      .from('articles')
       .where(articleIdObj)
-      .returning("*")
+      .returning('*')
       .then(([article]) => {
         return { article: article };
       });
@@ -64,31 +65,31 @@ exports.fetchMultipleArticles = (queryObj) => {
 
   return dbConnection
     .select(
-      "articles.author",
-      "title",
-      "articles.article_id",
-      "topic",
-      "articles.created_at",
-      "articles.votes"
+      'articles.author',
+      'title',
+      'articles.article_id',
+      'topic',
+      'articles.created_at',
+      'articles.votes'
     )
-    .count("comments.article_id", { as: "comment_count" })
-    .from("articles")
-    .leftJoin("comments", "articles.article_id", "=", "comments.article_id")
-    .groupBy("articles.article_id")
+    .count('comments.article_id', { as: 'comment_count' })
+    .from('articles')
+    .leftJoin('comments', 'articles.article_id', '=', 'comments.article_id')
+    .groupBy('articles.article_id')
     .modify((querySoFar) => {
       if (author !== undefined && topic !== undefined) {
-        querySoFar.where("topic", topic).where("articles.author", author);
+        querySoFar.where('topic', topic).where('articles.author', author);
       } else if (author !== undefined && topic === undefined) {
-        querySoFar.where("articles.author", author);
+        querySoFar.where('articles.author', author);
       } else if ((author === undefined) & (topic !== undefined)) {
-        querySoFar.where("topic", topic);
+        querySoFar.where('topic', topic);
       } else {
         querySoFar.then((articles) => {
           return articles;
         });
       }
     })
-    .orderBy(sort_by || "created_at", order || "desc")
+    .orderBy(sort_by || 'created_at', order || 'desc')
     .modify((querySoFar) => {
       if (limit != undefined) {
         querySoFar.limit(limit).offset(countOffset);
@@ -99,6 +100,10 @@ exports.fetchMultipleArticles = (queryObj) => {
       for (arti in articles) {
         articles[arti].total_articles_count =
           articles.length + ommittedArticles;
+
+        articles[arti].created_at = reFormatTimeStamp(
+          articles[arti].created_at
+        );
       }
 
       return { articles: articles };

@@ -262,7 +262,7 @@ describe('PAGINATION TESTS GET comments by ID', () => {
   });
 });
 
-describe('GET articles', () => {
+describe.only('GET articles', () => {
   describe('/api/articles', () => {
     it('returns an array of Articles with correct props when no queries applied ', () => {
       return request(app)
